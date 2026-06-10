@@ -1,0 +1,839 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Para Meu Amor</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Georgia', 'Times New Roman', serif;
+            background: #1a0a0a;
+            overflow-x: hidden;
+            cursor: default;
+        }
+
+        /* ========== CAPA ========== */
+        .capa {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100vh;
+            background: linear-gradient(135deg, #1a0a0a 0%, #3d0e0e 30%, #1a0a0a 60%, #0d0d0d 100%);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            z-index: 1000;
+            transition: all 1.2s cubic-bezier(0.77, 0, 0.175, 1);
+        }
+
+        .capa.aberta {
+            opacity: 0;
+            pointer-events: none;
+            transform: scale(1.1);
+        }
+
+        .capa-titulo {
+            font-size: 3.5rem;
+            color: #e8c4b8;
+            text-align: center;
+            font-weight: 300;
+            letter-spacing: 4px;
+            text-shadow: 0 0 40px rgba(232, 196, 184, 0.4);
+            margin-bottom: 20px;
+            animation: flutuarTexto 3s ease-in-out infinite;
+            user-select: none;
+        }
+
+        @keyframes flutuarTexto {
+            0%,
+            100% {
+                transform: translateY(0);
+            }
+            50% {
+                transform: translateY(-12px);
+            }
+        }
+
+        .capa-subtitulo {
+            font-size: 1.2rem;
+            color: #c99586;
+            letter-spacing: 6px;
+            margin-bottom: 50px;
+            animation: flutuarTexto 3s ease-in-out 0.5s infinite;
+            user-select: none;
+        }
+
+        .botao-abrir {
+            background: transparent;
+            border: 2px solid #c99586;
+            color: #c99586;
+            padding: 16px 40px;
+            font-size: 1.1rem;
+            letter-spacing: 3px;
+            cursor: pointer;
+            font-family: 'Georgia', serif;
+            transition: all 0.5s ease;
+            position: relative;
+            overflow: hidden;
+            user-select: none;
+            border-radius: 2px;
+        }
+
+        .botao-abrir:hover {
+            background: rgba(201, 149, 134, 0.1);
+            box-shadow: 0 0 30px rgba(201, 149, 134, 0.3);
+            letter-spacing: 5px;
+        }
+
+        .botao-abrir::after {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            width: 0;
+            height: 0;
+            background: rgba(201, 149, 134, 0.2);
+            border-radius: 50%;
+            transform: translate(-50%, -50%);
+            transition: width 0.6s, height 0.6s;
+        }
+
+        .botao-abrir:hover::after {
+            width: 300px;
+            height: 300px;
+        }
+
+        /* Partículas na capa */
+        .particulas {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+        }
+
+        .particula {
+            position: absolute;
+            width: 3px;
+            height: 3px;
+            background: #e8c4b8;
+            border-radius: 50%;
+            animation: cair 4s linear infinite;
+            opacity: 0;
+        }
+
+        @keyframes cair {
+            0% {
+                transform: translateY(-100px) rotate(0deg);
+                opacity: 0;
+            }
+            10% {
+                opacity: 0.8;
+            }
+            90% {
+                opacity: 0.3;
+            }
+            100% {
+                transform: translateY(105vh) rotate(720deg);
+                opacity: 0;
+            }
+        }
+
+        /* ========== CONTEÚDO PRINCIPAL ========== */
+        .conteudo-principal {
+            position: relative;
+            z-index: 1;
+            opacity: 0;
+            transition: opacity 1s ease 0.5s;
+        }
+
+        .conteudo-principal.visivel {
+            opacity: 1;
+        }
+
+        /* ========== INTRODUÇÃO ========== */
+        .introducao {
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 60px 30px;
+            background: linear-gradient(180deg, #1a0a0a 0%, #2d1010 50%, #1a0a0a 100%);
+            position: relative;
+        }
+
+        .introducao-texto {
+            max-width: 700px;
+            color: #d4a99a;
+            font-size: 1.15rem;
+            line-height: 2;
+            text-align: center;
+            letter-spacing: 1px;
+        }
+
+        .introducao-texto .assinatura {
+            margin-top: 40px;
+            font-style: italic;
+            color: #c99586;
+            font-size: 1.3rem;
+        }
+
+        /* ========== POEMAS ========== */
+        .poema-container {
+            padding: 100px 30px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .poema-container:nth-child(odd) {
+            background: linear-gradient(180deg, #0d0d0d 0%, #1a0a0a 30%, #1a0a0a 70%, #0d0d0d 100%);
+        }
+
+        .poema-container:nth-child(even) {
+            background: linear-gradient(180deg, #1a0a0a 0%, #0d0d0d 30%, #0d0d0d 70%, #1a0a0a 100%);
+        }
+
+        .poema {
+            max-width: 650px;
+            margin: 0 auto;
+            text-align: center;
+            opacity: 0;
+            transform: translateY(50px);
+            transition: all 1s ease;
+        }
+
+        .poema.visivel {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        .poema-titulo {
+            font-size: 2rem;
+            color: #c99586;
+            margin-bottom: 40px;
+            letter-spacing: 3px;
+            font-weight: 300;
+            position: relative;
+        }
+
+        .poema-titulo::after {
+            content: '✦';
+            position: absolute;
+            bottom: -20px;
+            left: 50%;
+            transform: translateX(-50%);
+            font-size: 0.7rem;
+            color: #8b5e5e;
+        }
+
+        .poema-corpo {
+            color: #c9a99a;
+            font-size: 1.1rem;
+            line-height: 2.2;
+            letter-spacing: 1px;
+        }
+
+        .poema-corpo br {
+            content: '';
+            display: block;
+            margin-bottom: 8px;
+        }
+
+        /* ========== ORAÇÃO ========== */
+        .oracao-container {
+            padding: 120px 30px;
+            background: linear-gradient(180deg, #0d0d0d 0%, #1a0808 40%, #1a0808 60%, #0d0d0d 100%);
+            text-align: center;
+            position: relative;
+        }
+
+        .oracao {
+            max-width: 650px;
+            margin: 0 auto;
+            opacity: 0;
+            transform: translateY(50px);
+            transition: all 1s ease;
+        }
+
+        .oracao.visivel {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        .oracao-titulo {
+            font-size: 2rem;
+            color: #c99586;
+            margin-bottom: 40px;
+            letter-spacing: 3px;
+            font-weight: 300;
+            font-style: italic;
+        }
+
+        .oracao-corpo {
+            color: #c9a99a;
+            font-size: 1.1rem;
+            line-height: 2.2;
+            letter-spacing: 1px;
+            font-style: italic;
+        }
+
+        /* ========== SONETO ========== */
+        .soneto-container {
+            padding: 120px 30px;
+            background: linear-gradient(180deg, #0d0d0d 0%, #1a0a0a 30%, #1a0a0a 70%, #0d0d0d 100%);
+            text-align: center;
+        }
+
+        .soneto {
+            max-width: 600px;
+            margin: 0 auto;
+            opacity: 0;
+            transform: translateY(50px);
+            transition: all 1s ease;
+        }
+
+        .soneto.visivel {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        .soneto-referencia {
+            color: #8b6e6e;
+            font-size: 1rem;
+            margin-bottom: 30px;
+            letter-spacing: 1px;
+            font-style: italic;
+        }
+
+        .soneto-titulo {
+            font-size: 1.8rem;
+            color: #c99586;
+            margin-bottom: 40px;
+            letter-spacing: 3px;
+            font-weight: 300;
+        }
+
+        .soneto-corpo {
+            color: #c9a99a;
+            font-size: 1.1rem;
+            line-height: 2.3;
+            letter-spacing: 1px;
+        }
+
+        /* ========== CORÍNTIOS ========== */
+        .corintios-container {
+            padding: 120px 30px;
+            background: linear-gradient(180deg, #1a0a0a 0%, #0d0d0d 30%, #0d0d0d 70%, #1a0a0a 100%);
+            text-align: center;
+        }
+
+        .corintios {
+            max-width: 600px;
+            margin: 0 auto;
+            opacity: 0;
+            transform: translateY(50px);
+            transition: all 1s ease;
+        }
+
+        .corintios.visivel {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        .corintios-referencia {
+            color: #8b6e6e;
+            font-size: 1rem;
+            margin-bottom: 30px;
+            letter-spacing: 1px;
+            font-style: italic;
+        }
+
+        .corintios-corpo {
+            color: #c9a99a;
+            font-size: 1.1rem;
+            line-height: 2.5;
+            letter-spacing: 1px;
+        }
+
+        /* ========== FINAL ========== */
+        .final-container {
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 60px 30px;
+            background: linear-gradient(180deg, #0d0d0d 0%, #1a0a0a 50%, #0d0d0d 100%);
+        }
+
+        .final {
+            max-width: 650px;
+            text-align: center;
+            opacity: 0;
+            transform: translateY(50px);
+            transition: all 1s ease;
+        }
+
+        .final.visivel {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        .final-texto {
+            color: #d4a99a;
+            font-size: 1.2rem;
+            line-height: 2.3;
+            letter-spacing: 1px;
+        }
+
+        .final-coracao {
+            font-size: 3rem;
+            margin-top: 40px;
+            animation: pulsar 1.5s ease-in-out infinite;
+        }
+
+        @keyframes pulsar {
+            0%,
+            100% {
+                transform: scale(1);
+            }
+            50% {
+                transform: scale(1.3);
+            }
+        }
+
+        /* ========== PÉTALAS CAINDO ========== */
+        .petalas-container {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 0;
+        }
+
+        .petala {
+            position: absolute;
+            top: -50px;
+            font-size: 1.5rem;
+            animation: cairPetala linear infinite;
+            opacity: 0.7;
+        }
+
+        @keyframes cairPetala {
+            0% {
+                transform: translateY(-50px) rotate(0deg) translateX(0);
+                opacity: 0;
+            }
+            10% {
+                opacity: 0.7;
+            }
+            90% {
+                opacity: 0.4;
+            }
+            100% {
+                transform: translateY(105vh) rotate(720deg) translateX(var(--desvio));
+                opacity: 0;
+            }
+        }
+
+        /* ========== RESPONSIVO ========== */
+        @media (max-width: 768px) {
+            .capa-titulo {
+                font-size: 2.2rem;
+                letter-spacing: 2px;
+            }
+            .capa-subtitulo {
+                font-size: 0.9rem;
+                letter-spacing: 3px;
+            }
+            .botao-abrir {
+                padding: 14px 30px;
+                font-size: 0.95rem;
+                letter-spacing: 2px;
+            }
+            .introducao-texto {
+                font-size: 1rem;
+                line-height: 1.8;
+            }
+            .poema-titulo {
+                font-size: 1.5rem;
+            }
+            .poema-corpo {
+                font-size: 0.95rem;
+                line-height: 1.9;
+            }
+            .oracao-titulo,
+            .soneto-titulo {
+                font-size: 1.5rem;
+            }
+            .oracao-corpo,
+            .soneto-corpo,
+            .corintios-corpo,
+            .final-texto {
+                font-size: 0.95rem;
+                line-height: 1.9;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- ========== CAPA ========== -->
+    <div class="capa" id="capa">
+        <div class="particulas" id="particulas"></div>
+        <h1 class="capa-titulo">para meu amor</h1>
+        <p class="capa-subtitulo">✦ um presente do coração ✦</p>
+        <button class="botao-abrir" id="botaoAbrir">abra este livro</button>
+    </div>
+
+    <!-- ========== CONTEÚDO PRINCIPAL ========== -->
+    <div class="conteudo-principal" id="conteudoPrincipal">
+
+        <!-- Introdução -->
+        <section class="introducao" id="introducao">
+            <div class="introducao-texto fade-in">
+                <p>Oi, meu amor. Tudo bem?</p>
+                <p>Aqui é o Thiago, seu namorado.</p>
+                <p>Estou fazendo isso aqui para celebrar o nosso primeiro Dia dos Namorados.</p>
+                <p>A seguir, você encontrará os poemas que já escrevi para ti, reunidos em uma pequena cronologia romântica, acompanhada de algumas inspirações — pequenas e grandes — que fizeram parte dessa jornada.</p>
+                <p>Algumas dessas palavras você já conhece.<br>Outras talvez nem se lembre mais.</p>
+                <p>Mas todas elas têm algo em comum:<br>foram escritas pensando em você.</p>
+                <p class="assinatura">Eu te amo. ❤️</p>
+            </div>
+        </section>
+
+        <!-- Poema 1: Te Conhecer -->
+        <section class="poema-container">
+            <div class="poema">
+                <h2 class="poema-titulo">Te Conhecer</h2>
+                <div class="poema-corpo">
+                    Te conhecer...<br>
+                    Foi como acordar no sábado sabendo que amanhã é domingo...<br>
+                    É como levantar de madrugada e saber que ainda tens mais tempo para dormir...<br>
+                    É aquele primeiro mergulho no mar que começa gelada e quando percebes estas morno...<br>
+                    É o brilho da Lua que refletido no mar<br>
+                    Brilha os teus olhos...<br>
+                    É a piada sem graça que de todo modo te faz rir...<br>
+                    É a música com a melodia clássica<br>
+                    Que escuto repetidas vezes, e em muitas vezes me pego pensando em ti...<br>
+                    Te conhecer foi como aprender a sorrir em dias tristes...<br>
+                    Te conhecer foi, é, seguirá sendo como uma escola.<br>
+                    Todos os dias aprendo um pouco mais a amar.
+                </div>
+            </div>
+        </section>
+
+        <!-- Poema 2: Quando -->
+        <section class="poema-container">
+            <div class="poema">
+                <h2 class="poema-titulo">Quando</h2>
+                <div class="poema-corpo">
+                    As vezes não me sobra palavras para dizer tudo.. Eu fico tímido, inseguro<br>
+                    Acho que tudo que eu venha dizer seja exagerado, que talvez eu esteja sendo bobo<br>
+                    Que odeie tudo que eu diga<br>
+                    Eu sei, eu sou idiota (risos)<br>
+                    É que quando recebo sua mensagem, eu paro o mundo parar ler...<br>
+                    Quando estou no pior dos meus dias, é você quem procuro.<br>
+                    Muitas vezes sem você saber, me fez sorrir...<br>
+                    Amo cada detalhe seu<br>
+                    Amo quando ri, mesmo quando não escuto sua risada<br>
+                    Deus sabe como eu amo sua voz, quando no meio do áudio você me chama de "meu bem" de "amor" meu sorriso aparece...<br>
+                    Como eu amo sua presença...<br>
+                    As vezes eu sinto não conseguir te mostrar tudo que sinto<br>
+                    Mas espero conseguir pelo menos te fazer sentir segura para ser você mesma comigo<br>
+                    Por que quando você é só você...<br>
+                    Já está perfeito.
+                </div>
+            </div>
+        </section>
+
+        <!-- Poema 3: Quilômetros -->
+        <section class="poema-container">
+            <div class="poema">
+                <h2 class="poema-titulo">Quilômetros</h2>
+                <div class="poema-corpo">
+                    1 pessoa pensa em você, mesmo quando você acha que ninguém pensa.<br>
+                    Há 9 ou mais motivos para você sorrir<br>
+                    Tem 7 razões para você não desistir do que você tanto batalha<br>
+                    6 explicações fundamentais que mostram com provas concretas o quão incrível é.<br>
+                    E, 4 frases que te dizem isso;<br>
+                    1, sou eu que penso em ti.<br>
+                    eu criaria os 9 motivos para você sorrir se um dia precisares de mim<br>
+                    Eu conto as 7 razões para você não desistir do que você tanto batalha quando precisares ouvir<br>
+                    Eu dou as 6 explicações fundamentais que mostram com provas concretas o quão incrível é<br><br>
+                    E como uma frase extra, te diria que mesmo a 1.976,4 quilômetros de distância, você é quem eu definiria como o motivo do meu sorriso mais sincero pela manhã, meu pensamento mais lindo durante o dia, e meu final de noite perfeita.
+                </div>
+            </div>
+        </section>
+
+        <!-- Poema 4: Encataste -->
+        <section class="poema-container">
+            <div class="poema">
+                <h2 class="poema-titulo">Encataste</h2>
+                <div class="poema-corpo">
+                    Encantastes meus olhos ao ver tua beleza<br>
+                    Feito neblina dos domingos<br>
+                    Praia no verão<br>
+                    Bosque no outono...<br>
+                    És bela como um livro ao fim da tarde<br>
+                    Um café pela manhã<br>
+                    Tens a risada boa aos ouvidos daquele que aprecia<br>
+                    Contemplativo tornei-me ao conheceste a ti<br>
+                    Visto que tudo se tornou mal-apessoado quando comparado a você.<br>
+                    Suplico em minhas orações poéticas que teu amor um dia seja meu, assim, cuidarei como um jardineiro cuida de uma rosa.<br>
+                    Jamais a arrancarei de tuas raízes, mas me enraizarei próximo a ti, se permiteres...<br>
+                    Como um bibliotecário sabe onde está cada livro com atenção, busco de forma atenciosa saber cada detalhe seu.<br>
+                    E se um dia, por deslize, ignorância ou desespero<br>
+                    Eu nem se quer conseguir me fazer perfeito, suplico que entenda meu jeito apaixonado de ser.
+                </div>
+            </div>
+        </section>
+
+        <!-- Poema 5: Por Tudo -->
+        <section class="poema-container">
+            <div class="poema">
+                <h2 class="poema-titulo">Por Tudo</h2>
+                <div class="poema-corpo">
+                    Leve-me<br>
+                    Aos teus pensamentos mais profundos<br>
+                    Na monotonia dos teus dias<br>
+                    Permita-me usufruir dos momentos mais comuns da tua vida<br>
+                    Deixe-me apreciar seu sorriso, abraçar o teu corpo, sentir o teu cheiro, beijar o teu rosto<br>
+                    Guarda-me no teu futuro, para que eu possa contigo construí-lo<br>
+                    Suplico a ti uma vida juntos que eu possa dizer ao mundo o quanto amo a ti.<br>
+                    Sigo na intensidade tola das minhas palavras mais verdadeiras, esvaindo me do orgulho para encher me de admiração por ti<br>
+                    Visto que sou humano e limitado de tempo<br>
+                    Permita-me viver o tempo contigo.<br>
+                    E com tudo que peço que pouco sei que não é<br>
+                    Juro, por tudo, que ainda serás minha mulher.
+                </div>
+            </div>
+        </section>
+
+        <!-- Poema 6: Em meio a Tudo -->
+        <section class="poema-container">
+            <div class="poema">
+                <h2 class="poema-titulo">Em meio a Tudo</h2>
+                <div class="poema-corpo">
+                    Em meio a minha solitude<br>
+                    Encontrei companhia<br>
+                    Em meio a minha singela vida recheada de problemas<br>
+                    Encontrei soluções simples<br>
+                    Em meio ao frio do cotidiano<br>
+                    Encontrei calor<br>
+                    Em meio aos meus sorrisos sem jeito<br>
+                    Encontrei o motivo para sorrir<br>
+                    Em meio aos meus dias quieto<br>
+                    Encontrei a inquietação perfeita<br>
+                    Em meio ao meu amor<br>
+                    Encontrei mais de mil motivos para amar<br>
+                    Em meio a tudo<br>
+                    Encontrei você.
+                </div>
+            </div>
+        </section>
+
+        <!-- Poema 7: Perdoe a mim -->
+        <section class="poema-container">
+            <div class="poema">
+                <h2 class="poema-titulo">Perdoe a mim</h2>
+                <div class="poema-corpo">
+                    Perdoe a mim<br>
+                    Por meu jeito louco<br>
+                    Por meu sorriso solto<br>
+                    Por meu jeito irritante de te irritar<br>
+                    É que quando você me responde<br>
+                    Eu fico bobo<br>
+                    Perco o medo de me amostrar<br>
+                    Eu fico tão confortável que as vezes esqueço que tenho que me comportar<br>
+                    É que com você sou eu mesmo<br>
+                    Doido, bobo e desajeitado<br>
+                    Todo preocupado, mas tentando todo dia te conquistar<br>
+                    Perdoe eu pelos meus risos<br>
+                    Piadas sem juízo<br>
+                    É tudo por que quero te admirar<br>
+                    Me vejo todo perdido, um pouco até aflito<br>
+                    Quando você não vem para gente conversar<br>
+                    Perdoe esse pobre homem<br>
+                    Ele só quer te amar.
+                </div>
+            </div>
+        </section>
+
+        <!-- Oração -->
+        <section class="oracao-container">
+            <div class="oracao">
+                <h2 class="oracao-titulo">✦ Oração ✦</h2>
+                <div class="oracao-corpo">
+                    Oi Deus... Sou eu de novo<br><br>
+                    É que nas minhas orações creio que o senhor tenha reparado em um detalhe<br>
+                    É que tenho falado dela com muita frequência...<br>
+                    É que o sorriso dela me deixou sem palavras<br>
+                    É que a voz dela é angelical, sabe?<br>
+                    É claro que o senhor sabe (risos)<br>
+                    Foi o senhor que a criou<br><br>
+                    Obrigado visse, nem em nos meus melhores sonhos saberia que poderia existir ela.<br>
+                    É bem melhor do que orei.<br><br>
+                    A Deus, nessa oração, peço que eu consiga fazê-la feliz também, do meu jeito torto de sempre brincar faça ela chorar... de rir<br>
+                    Que ela veja em mim um homem sério, não um moleque<br>
+                    O Deus, ajuda eu, quero conquistar o coração dela.<br>
+                    Que a gente construa algo que o senhor se orgulhe.<br><br>
+                    Oi Deus, sou eu de novo...
+                </div>
+            </div>
+        </section>
+
+        <!-- Soneto da Fidelidade -->
+        <section class="soneto-container">
+            <div class="soneto">
+                <p class="soneto-referencia">E quando penso em nós, lembro-me deste soneto de Vinícius de Moraes:</p>
+                <h2 class="soneto-titulo">Soneto da Fidelidade</h2>
+                <div class="soneto-corpo">
+                    De tudo, ao meu amor serei atento<br>
+                    Antes, e com tal zelo, e sempre, e tanto<br>
+                    Que mesmo em face do maior encanto<br>
+                    Dele se encante mais meu pensamento.<br><br>
+                    Quero vivê-lo em cada vão momento<br>
+                    E em louvor hei de espalhar meu canto<br>
+                    E rir meu riso e derramar meu pranto<br>
+                    Ao seu pesar ou seu contentamento.<br><br>
+                    E assim, quando mais tarde me procure<br>
+                    Quem sabe a morte, angústia de quem vive<br>
+                    Quem sabe a solidão, fim de quem ama<br><br>
+                    Eu possa me dizer do amor (que tive):<br>
+                    Que não seja imortal, posto que é chama<br>
+                    Mas que seja infinito enquanto dure.
+                </div>
+            </div>
+        </section>
+
+        <!-- 1 Coríntios 13 -->
+        <section class="corintios-container">
+            <div class="corintios">
+                <p class="corintios-referencia">E pensando em nosso amor, desejo de toda minha alma, que sejamos como 1 Coríntios 13:4-7 que diz assim:</p>
+                <div class="corintios-corpo">
+                    O amor é paciente, o amor é bondoso. Não inveja, não se vangloria, não se orgulha.<br>
+                    Não maltrata, não procura seus interesses, não se ira facilmente, não guarda rancor.<br>
+                    O amor não se alegra com a injustiça, mas se alegra com a verdade.<br>
+                    Tudo sofre, tudo crê, tudo espera, tudo suporta.
+                </div>
+            </div>
+        </section>
+
+        <!-- Final -->
+        <section class="final-container">
+            <div class="final">
+                <div class="final-texto">
+                    Esse pequeno texto meu amor, é a primeira surpresa antes do dia dos namorados, eu te amo muito, e espero que goste.<br><br>
+                    Juntei alguns dos poemas que fiz para você...<br>
+                    A fim de te lembrar o quão apaixonado sou por você.
+                </div>
+                <div class="final-coracao">❤️</div>
+            </div>
+        </section>
+
+    </div>
+
+    <!-- Pétalas caindo -->
+    <div class="petalas-container" id="petalasContainer"></div>
+
+    <script>
+        // ========== ELEMENTOS ==========
+        const capa = document.getElementById('capa');
+        const botaoAbrir = document.getElementById('botaoAbrir');
+        const conteudoPrincipal = document.getElementById('conteudoPrincipal');
+        const particulasContainer = document.getElementById('particulas');
+        const petalasContainer = document.getElementById('petalasContainer');
+
+        // ========== CRIAR PARTÍCULAS NA CAPA ==========
+        function criarParticulas() {
+            for (let i = 0; i < 40; i++) {
+                const particula = document.createElement('div');
+                particula.classList.add('particula');
+                particula.style.left = Math.random() * 100 + '%';
+                particula.style.animationDelay = Math.random() * 4 + 's';
+                particula.style.animationDuration = (Math.random() * 3 + 3) + 's';
+                particula.style.width = (Math.random() * 3 + 1) + 'px';
+                particula.style.height = particula.style.width;
+                particulasContainer.appendChild(particula);
+            }
+        }
+
+        // ========== CRIAR PÉTALAS CAINDO ==========
+        function criarPetalas() {
+            const emojis = ['🌸', '💮', '🌷', '✿', '🌺', '💐', '🪷', '🌹'];
+            for (let i = 0; i < 25; i++) {
+                const petala = document.createElement('div');
+                petala.classList.add('petala');
+                petala.textContent = emojis[Math.floor(Math.random() * emojis.length)];
+                petala.style.left = Math.random() * 100 + '%';
+                petala.style.animationDelay = Math.random() * 15 + 's';
+                petala.style.animationDuration = (Math.random() * 10 + 10) + 's';
+                petala.style.fontSize = (Math.random() * 1.5 + 0.8) + 'rem';
+                petala.style.setProperty('--desvio', (Math.random() * 200 - 100) + 'px');
+                petalasContainer.appendChild(petala);
+            }
+        }
+
+        // ========== ABRIR CAPA ==========
+        botaoAbrir.addEventListener('click', () => {
+            capa.classList.add('aberta');
+            conteudoPrincipal.classList.add('visivel');
+
+            // Tocar um som suave (opcional - descomente se tiver arquivo de áudio)
+            // const audio = new Audio('musica-romantica.mp3');
+            // audio.volume = 0.3;
+            // audio.play().catch(() => {});
+
+            // Scroll suave para a introdução
+            setTimeout(() => {
+                document.getElementById('introducao').scrollIntoView({ behavior: 'smooth' });
+            }, 600);
+        });
+
+        // ========== OBSERVER PARA ANIMAÇÕES DE ROLAGEM ==========
+        const observerOptions = {
+            threshold: 0.2,
+            rootMargin: '0px 0px -50px 0px'
+        };
+
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.classList.add('visivel');
+                }
+            });
+        }, observerOptions);
+
+        // Observar todos os elementos animáveis
+        document.querySelectorAll('.poema, .oracao, .soneto, .corintios, .final, .fade-in').forEach(el => {
+            observer.observe(el);
+        });
+
+        // ========== INICIAR ==========
+        criarParticulas();
+        criarPetalas();
+
+        // ========== EFEITO DE DIGITAÇÃO NA INTRODUÇÃO (opcional) ==========
+        const introducaoTexto = document.querySelector('.introducao-texto');
+        if (introducaoTexto) {
+            introducaoTexto.style.opacity = '0';
+            introducaoTexto.style.transition = 'opacity 1.5s ease';
+            setTimeout(() => {
+                introducaoTexto.style.opacity = '1';
+            }, 300);
+        }
+
+        console.log('✨ Site romântico pronto! Feito com amor por Thiago para o amor dele. ✨');
+        console.log('💖 Feliz Dia dos Namorados! 💖');
+    </script>
+</body>
+</html>
